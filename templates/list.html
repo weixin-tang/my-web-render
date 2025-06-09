@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}网页列表 - 网页显示工具{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">所有网页列表</h5>
+                <a href="/web-render" class="btn btn-primary">创建新网页</a>
+            </div>
+            <div class="card-body">
+                {% if pages %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>标题</th>
+                                    <th>页面ID</th>
+                                    <th>创建时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for page in pages %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ page.title or "无标题" }}</strong>
+                                    </td>
+                                    <td>
+                                        <code>{{ page.page_id }}</code>
+                                    </td>
+                                    <td>
+                                        {{ page.created_at.strftime('%Y-%m-%d %H:%M:%S') }}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="/web-render/view/{{ page.page_id }}" class="btn btn-sm btn-outline-primary" target="_blank">查看</a>
+                                            <a href="/web-render/preview/{{ page.page_id }}" class="btn btn-sm btn-outline-secondary" target="_blank">预览</a>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="deletePage('{{ page.page_id }}')">删除</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <h6 class="text-muted">暂无网页</h6>
+                        <p class="text-muted">点击上方按钮创建您的第一个网页</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
