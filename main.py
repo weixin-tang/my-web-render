@@ -27,14 +27,14 @@ app.add_middleware(
 Base.metadata.create_all(bind=engine)
 
 # 挂载静态文件
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/web-render/static", StaticFiles(directory="static"), name="static")
 
 # 包含路由
 app.include_router(api.router)
 app.include_router(pages.router)
 
 # 健康检查端点
-@app.get("/health")
+@app.get("/web-render/health")
 async def health_check():
     return {"status": "healthy", "message": "网页显示工具运行正常"}
 

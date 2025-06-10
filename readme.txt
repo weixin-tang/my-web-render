@@ -7,6 +7,51 @@
 localhost/web-render
 
 
+git clone https://github.com/weixin-tang/my-web-render.git
+
+
+docker build -t my-web-render:latest .
+
+
+docker run -itd --name my-web-render --hostname my-web-render --network weixin-network --restart always -p 8008:8008 my-web-render
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
