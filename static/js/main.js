@@ -43,7 +43,7 @@ function showSuccess(result) {
     const pageUrl = document.getElementById('pageUrl');
     const previewUrl = document.getElementById('previewUrl');
     
-    const fullUrl = window.location.origin + result.url;
+    const fullUrl = window.location.origin + '/web-render' + result.url;
     const fullPreviewUrl = window.location.origin + '/web-render/preview/' + result.page_id;
     
     pageUrl.href = fullUrl;
