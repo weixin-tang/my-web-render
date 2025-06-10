@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, Form
+
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -18,14 +19,26 @@ async def home(request: Request, db: Session = Depends(get_db)):
     )
 
 @router.get("/view/{page_id}", response_class=HTMLResponse)
-async def view_page(page_id: str, db: Session = Depends(get_db)):
-    """显示网页内容"""
+async def view_page(request: Request , page_id: str, db: Session = Depends(get_db)):
+    """在全屏模式下显示网页内容"""
+    # 检查页面是否存在
     db_page = get_web_page_by_id(db, page_id)
     if not db_page:
-        raise HTTPException(status_code=404, detail="网页不存在")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="网页不存在"
+        )
     
-    # 直接返回HTML内容
-    return HTMLResponse(content=db_page.html_content)
+    # 构建iframe要访问的URL
+    data_url = f"/web-render/api/view/{page_id}"
+    
+    return templates.TemplateResponse(
+        "fullscreen.html",
+        {
+            "request": request,
+            "dataUrl": data_url
+        }
+    )
 
 @router.get("/preview/{page_id}", response_class=HTMLResponse)
 async def preview_page(request: Request, page_id: str, db: Session = Depends(get_db)):

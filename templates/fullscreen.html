@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全屏按钮示例</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 自定义一些样式，如果需要的话 */
+        body.fullscreen-active {
+            overflow: hidden; /* 防止全屏时出现滚动条 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- 移除了顶部的 statusBar -->
+
+    <div class="h-screen flex flex-col">
+        <!-- 页面主要内容 -->
+        <iframe 
+            id="contentFrame" 
+            src="" 
+            class="w-full h-full border-0 flex-grow"></iframe>
+    </div>
+
+    <!-- 新增悬浮全屏按钮 -->
+    <div class="fixed bottom-8 right-8 z-50">
+        <button id="fullscreenBtn" title="切换全屏" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-3 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-150 ease-in-out">
+            <i class="fas fa-expand fa-lg"></i>
+        </button>
+    </div>
+
+    <script>
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const fullscreenIcon = fullscreenBtn.querySelector('i');
+        const docEl = document.documentElement;
+        const contentFrame = document.getElementById('contentFrame');
+
+        // 从 URL 获取 data 参数
+        // const urlParams = new URLSearchParams(window.location.search);
+        // const dataUrl = urlParams.get('data');
+        const dataUrl = "{{ dataUrl }}";
+
+        // 设置 iframe 的 src
+        if (dataUrl) {
+            contentFrame.src = dataUrl;
+        } else {
+            // 如果 URL 中没有 data 参数，则使用默认值
+            contentFrame.src = "https://www.cisdi.net.cn/"; 
+        }
+
+        function isFullscreen() {
+            return document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+        }
+
+        function toggleFullscreen() {
+            if (!isFullscreen()) {
+                if (docEl.requestFullscreen) {
+                    docEl.requestFullscreen();
+                } else if (docEl.webkitRequestFullscreen) { /* Safari */
+                    docEl.webkitRequestFullscreen();
+                } else if (docEl.msRequestFullscreen) { /* IE11 */
+                    docEl.msRequestFullscreen();
+                } else if (docEl.mozRequestFullScreen) { /* Firefox */
+                    docEl.mozRequestFullScreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) { /* Safari */
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { /* IE11 */
+                    document.msExitFullscreen();
+                } else if (document.mozCancelFullScreen) { /* Firefox */
+                    document.mozCancelFullScreen();
+                }
+            }
+        }
+
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+        document.addEventListener('fullscreenchange', updateFullscreenIcon);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenIcon); /* Safari */
+        document.addEventListener('mozfullscreenchange', updateFullscreenIcon);    /* Firefox */
+        document.addEventListener('MSFullscreenChange', updateFullscreenIcon);   /* IE11 */
+
+        function updateFullscreenIcon() {
+            if (isFullscreen()) {
+                fullscreenIcon.classList.remove('fa-expand');
+                fullscreenIcon.classList.add('fa-compress');
+                document.body.classList.add('fullscreen-active');
+            } else {
+                fullscreenIcon.classList.remove('fa-compress');
+                fullscreenIcon.classList.add('fa-expand');
+                document.body.classList.remove('fullscreen-active');
+            }
+        }
+
+        // 初始化图标状态
+        updateFullscreenIcon();
+    </script>
+
+</body>
+</html>
